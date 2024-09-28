@@ -30,6 +30,7 @@ public class OrderService {
                     .price(orderRequest.price())
                     .build();
             orderRepo.save(order);
+            inventoryClient.useStock(orderRequest.skuNumber(),orderRequest.qty());
             return new OrderResponse(order.getOrderNumber(), order.getSkuCode(), order.getQty(),order.getPrice());
         }else{
             throw new RuntimeException("Product with skuCode "+ orderRequest.skuNumber() + " is not in stock");
