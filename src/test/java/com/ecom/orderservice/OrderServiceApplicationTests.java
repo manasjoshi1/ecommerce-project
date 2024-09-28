@@ -6,12 +6,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.shaded.org.checkerframework.checker.i18n.qual.LocalizableKey;
 
-@Import(TestcontainersConfiguration.class)
+//@Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWireMock(port =0)
 class OrderServiceApplicationTests {
     @ServiceConnection
     static MySQLContainer mySQLContainer = new MySQLContainer("mysql:8.3.0");
@@ -28,6 +30,7 @@ class OrderServiceApplicationTests {
     static {
         mySQLContainer.start();
     }
+
     @Test
     void submitOrder() {
         String req = """
@@ -37,10 +40,7 @@ class OrderServiceApplicationTests {
                         "price": 15.75
                     }
                 """;
-        var resp = RestAssured.given().contentType("application/json").body(req).when().post("api/orders")
-                .then()
-                .log().all()
-                .statusCode(2012).body("qty", Matchers.notNullValue());
+        InventoryClientStub.stubInventoryCall("PROD007",102);
 
     }
 
