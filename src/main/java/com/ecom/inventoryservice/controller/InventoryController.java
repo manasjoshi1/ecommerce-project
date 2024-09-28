@@ -16,5 +16,10 @@ public class InventoryController {
     public boolean isInStock(@RequestParam String skuCode, @RequestParam int quantity) {
         return inventoryService.isInStock(skuCode, quantity);
     }
+    @PutMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public boolean useStock(@RequestParam String skuCode, @RequestParam int quantity) {
+        return inventoryService.useStock(skuCode, quantity);
+    }
 
 }
